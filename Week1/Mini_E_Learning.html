@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini E-Learning Platform</title>
+    <style>
+      :root {
+        --bg: #f4f6fb;
+        --card: #ffffff;
+        --primary: #4a63e7;
+        --primary-dark: #3749b7;
+        --text: #1f2a44;
+        --muted: #6c7894;
+        --success: #2ea043;
+        --border: #e3e7f2;
+      }
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      header {
+        padding: 2rem 1.5rem;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0.25rem 0;
+        font-size: clamp(1.8rem, 4vw, 2.4rem);
+      }
+
+      p {
+        margin: 0;
+      }
+
+      .wrapper {
+        max-width: 1100px;
+        margin: 0 auto 3rem;
+        padding: 0 1.5rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .card {
+        background: var(--card);
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        box-shadow: 0 15px 35px rgba(21, 27, 53, 0.08);
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 22px 40px rgba(21, 27, 53, 0.12);
+      }
+
+      .card h2 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .card small {
+        color: var(--muted);
+      }
+
+      button {
+        border: none;
+        border-radius: 999px;
+        padding: 0.65rem 1.3rem;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s ease, transform 0.2s ease;
+      }
+
+      .primary-btn {
+        background: var(--primary);
+        color: white;
+      }
+
+      .primary-btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+      }
+
+      .ghost-btn {
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+
+      .ghost-btn:hover {
+        color: var(--text);
+        border-color: var(--text);
+      }
+
+      .detail-panel {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .detail-panel h3 {
+        margin: 0;
+      }
+
+      .progress {
+        height: 10px;
+        border-radius: 999px;
+        background: var(--border);
+        overflow: hidden;
+      }
+
+      .progress span {
+        display: block;
+        height: 100%;
+        background: var(--primary);
+        width: 0;
+        transition: width 0.4s ease;
+      }
+
+      .lesson-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .lesson-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: white;
+      }
+
+      .status {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--muted);
+      }
+
+      .status.complete {
+        color: var(--success);
+      }
+
+      .completed-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem 0.8rem;
+        border-radius: 999px;
+        background: rgba(46, 160, 67, 0.12);
+        color: var(--success);
+        font-weight: 600;
+        font-size: 0.85rem;
+      }
+
+      @media (max-width: 640px) {
+        header {
+          padding: 1.5rem 1rem;
+        }
+
+        .wrapper {
+          padding: 0 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <p>VibeCoding Assignment</p>
+      <h1>Mini E-Learning Platform</h1>
+      <p>Choose a course to explore lessons and track your progress.</p>
+    </header>
+
+    <main class="wrapper" id="course-wrapper"></main>
+
+    <template id="course-card-template">
+      <article class="card">
+        <div>
+          <small></small>
+          <h2></h2>
+          <p></p>
+        </div>
+        <div>
+          <button class="primary-btn view-details">View Details</button>
+          <button class="ghost-btn mark-complete">Mark Complete</button>
+        </div>
+      </article>
+    </template>
+
+    <template id="detail-panel-template">
+      <section class="card detail-panel">
+        <div>
+          <small>Course Detail</small>
+          <h3></h3>
+          <p class="status-badge"></p>
+        </div>
+        <div>
+          <div class="progress"><span></span></div>
+          <p class="progress-text"></p>
+        </div>
+        <ul class="lesson-list"></ul>
+      </section>
+    </template>
+
+    <script>
+      const courses = [
+        {
+          id: 1,
+          title: "Intro to JavaScript",
+          category: "Programming",
+          description: "Learn the basics of JavaScript ES6+ and modern tooling.",
+          lessons: [
+            "Variables & Types",
+            "Functions & Scope",
+            "DOM Manipulation",
+            "Fetch API",
+          ],
+          completedLessons: 1,
+          completed: false,
+        },
+        {
+          id: 2,
+          title: "Design Foundations",
+          category: "Design",
+          description:
+            "Understand typography, color theory, and layout principles.",
+          lessons: [
+            "Color & Contrast",
+            "Typography Systems",
+            "Grid & Layouts",
+            "Design Critique",
+          ],
+          completedLessons: 2,
+          completed: false,
+        },
+        {
+          id: 3,
+          title: "AI Prompt Crafting",
+          category: "AI",
+          description:
+            "Practice writing effective prompts for different AI tasks.",
+          lessons: [
+            "Prompt Patterns",
+            "Iterative Refinement",
+            "Role Playing Prompts",
+            "Evaluation & Testing",
+          ],
+          completedLessons: 3,
+          completed: false,
+        },
+      ];
+
+      const wrapper = document.getElementById("course-wrapper");
+      const cardTemplate = document.getElementById("course-card-template");
+      const detailTemplate = document.getElementById("detail-panel-template");
+
+      const render = () => {
+        wrapper.innerHTML = "";
+        courses.forEach((course) => {
+          const card = cardTemplate.content.cloneNode(true);
+          card.querySelector("small").textContent = course.category;
+          card.querySelector("h2").textContent = course.title;
+          card.querySelector("p").textContent = course.description;
+
+          if (course.completed) {
+            const pill = document.createElement("span");
+            pill.className = "completed-pill";
+            pill.textContent = "Completed";
+            card.querySelector("div").appendChild(pill);
+          }
+
+          card.querySelector(".view-details").addEventListener("click", () => {
+            renderDetail(course.id);
+          });
+
+          card.querySelector(".mark-complete").addEventListener("click", () => {
+            course.completed = true;
+            course.completedLessons = course.lessons.length;
+            render();
+            renderDetail(course.id);
+          });
+
+          wrapper.appendChild(card);
+        });
+      };
+
+      const renderDetail = (courseId) => {
+        const course = courses.find((c) => c.id === courseId);
+        if (!course) return;
+
+        let detailPanel = wrapper.querySelector(".detail-panel");
+        if (detailPanel) {
+          detailPanel.parentElement.remove();
+        }
+
+        const detailCard = detailTemplate.content.cloneNode(true);
+        detailCard.querySelector("h3").textContent = course.title;
+
+        const statusBadge = detailCard.querySelector(".status-badge");
+        statusBadge.textContent = course.completed
+          ? "Status: Completed"
+          : "Status: In progress";
+        statusBadge.className = course.completed
+          ? "status-badge completed-pill"
+          : "status-badge";
+
+        const progressRatio = course.lessons.length
+          ? Math.round((course.completedLessons / course.lessons.length) * 100)
+          : 0;
+
+        const progressBar = detailCard.querySelector(".progress span");
+        progressBar.style.width = progressRatio + "%";
+        detailCard.querySelector(
+          ".progress-text"
+        ).textContent = `${course.completedLessons}/${course.lessons.length} lessons completed (${progressRatio}%)`;
+
+        const lessonList = detailCard.querySelector(".lesson-list");
+        course.lessons.forEach((lesson, index) => {
+          const li = document.createElement("li");
+          li.innerHTML = `<span>${lesson}</span>`;
+
+          const status = document.createElement("span");
+          status.className =
+            index < course.completedLessons ? "status complete" : "status";
+          status.textContent =
+            index < course.completedLessons ? "Done" : "Pending";
+          li.appendChild(status);
+          lessonList.appendChild(li);
+        });
+
+        const cardWrapper = document.createElement("div");
+        cardWrapper.className = "card detail-panel";
+        cardWrapper.innerHTML = detailCard.firstElementChild.innerHTML;
+        wrapper.appendChild(cardWrapper);
+      };
+
+      render();
+      renderDetail(courses[0].id);
+    </script>
+  </body>
+</html>
