@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduVibe | Mini E-Learning Platform</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #7209b7;
+      --success: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+      --border-radius: 8px;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      background-color: #f5f7fb;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 1.5rem 2rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .page-title {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+    }
+
+    /* Home Page Styles */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .course-card {
+      background: white;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .course-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .course-image {
+      height: 160px;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.5rem;
+    }
+
+    .course-content {
+      padding: 1.5rem;
+    }
+
+    .course-title {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .course-description {
+      color: var(--gray);
+      margin-bottom: 1rem;
+      min-height: 60px;
+    }
+
+    .course-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background-color: var(--light-gray);
+      border-radius: 3px;
+      margin-top: 0.5rem;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    /* Detail Page Styles */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      background: var(--light-gray);
+      color: var(--dark);
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+      transition: var(--transition);
+    }
+
+    .back-btn:hover {
+      background: var(--gray);
+      color: white;
+    }
+
+    .back-btn i {
+      margin-right: 0.5rem;
+    }
+
+    .course-header {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      background: white;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+    }
+
+    .course-header-image {
+      flex: 0 0 200px;
+      height: 150px;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      border-radius: var(--border-radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+    }
+
+    .course-header-info {
+      flex: 1;
+    }
+
+    .course-header-title {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .course-header-description {
+      color: var(--gray);
+      margin-bottom: 1rem;
+    }
+
+    .course-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .stat-label {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .lessons-section {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--light-gray);
+    }
+
+    .lessons-list {
+      list-style: none;
+    }
+
+    .lesson-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--light-gray);
+    }
+
+    .lesson-item:last-child {
+      border-bottom: none;
+    }
+
+    .lesson-number {
+      width: 36px;
+      height: 36px;
+      background: var(--light-gray);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      font-weight: bold;
+      color: var(--dark);
+    }
+
+    .lesson-info {
+      flex: 1;
+    }
+
+    .lesson-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .lesson-duration {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .lesson-status {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      margin-left: 1rem;
+    }
+
+    .status-pending {
+      background: var(--light-gray);
+    }
+
+    .status-completed {
+      background: #4ade80;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #0da271;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn i {
+      margin-right: 0.5rem;
+    }
+
+    /* Completed State */
+    .completed-badge {
+      background: #4ade80;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .course-header {
+        flex-direction: column;
+      }
+
+      .course-header-image {
+        flex: none;
+        width: 100%;
+        height: 120px;
+      }
+
+      .courses-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>EduVibe</h1>
+    <p>Learn anything, anytime</p>
+  </header>
+
+  <div class="container" id="app">
+    <!-- Home Page -->
+    <div id="home-page">
+      <h2 class="page-title">Available Courses</h2>
+      <div class="courses-grid" id="courses-container">
+        <!-- Courses will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Course Detail Page (hidden by default) -->
+    <div id="detail-page" style="display: none;">
+      <a href="#" class="back-btn" id="back-btn">
+        <i>←</i> Back to Courses
+      </a>
+
+      <div class="course-header" id="course-header">
+        <!-- Course header will be populated by JavaScript -->
+      </div>
+
+      <div class="lessons-section">
+        <h3 class="section-title">Course Lessons</h3>
+        <ul class="lessons-list" id="lessons-list">
+          <!-- Lessons will be populated by JavaScript -->
+        </ul>
+
+        <div class="action-buttons">
+          <button class="btn btn-primary" id="start-course-btn">
+            <i>▶</i> Start Learning
+          </button>
+          <button class="btn btn-success" id="complete-course-btn">
+            <i>✓</i> Mark as Completed
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Course data
+    const courses = [
+      {
+        id: 1,
+        title: "Introduction to Web Development",
+        description: "Learn the fundamentals of HTML, CSS, and JavaScript to build modern websites.",
+        duration: "4 weeks",
+        lessons: [
+          { id: 1, title: "HTML Basics", duration: "25 min", completed: false },
+          { id: 2, title: "CSS Fundamentals", duration: "30 min", completed: false },
+          { id: 3, title: "JavaScript Essentials", duration: "45 min", completed: false },
+          { id: 4, title: "Responsive Design", duration: "35 min", completed: false }
+        ],
+        icon: "🌐"
+      },
+      {
+        id: 2,
+        title: "Data Science Fundamentals",
+        description: "Discover the core concepts of data analysis, visualization, and statistics.",
+        duration: "6 weeks",
+        lessons: [
+          { id: 1, title: "Introduction to Python", duration: "40 min", completed: false },
+          { id: 2, title: "Data Manipulation with Pandas", duration: "55 min", completed: false },
+          { id: 3, title: "Data Visualization", duration: "50 min", completed: false },
+          { id: 4, title: "Statistics for Data Science", duration: "60 min", completed: false }
+        ],
+        icon: "📊"
+      },
+      {
+        id: 3,
+        title: "UI/UX Design Principles",
+        description: "Master the art of creating intuitive and beautiful user interfaces.",
+        duration: "5 weeks",
+        lessons: [
+          { id: 1, title: "Design Thinking", duration: "35 min", completed: false },
+          { id: 2, title: "Wireframing & Prototyping", duration: "45 min", completed: false },
+          { id: 3, title: "Color Theory & Typography", duration: "40 min", completed: false },
+          { id: 4, title: "User Testing", duration: "50 min", completed: false }
+        ],
+        icon: "🎨"
+      }
+    ];
+
+    // DOM Elements
+    const homePage = document.getElementById('home-page');
+    const detailPage = document.getElementById('detail-page');
+    const coursesContainer = document.getElementById('courses-container');
+    const backBtn = document.getElementById('back-btn');
+    const courseHeader = document.getElementById('course-header');
+    const lessonsList = document.getElementById('lessons-list');
+    const startCourseBtn = document.getElementById('start-course-btn');
+    const completeCourseBtn = document.getElementById('complete-course-btn');
+
+    // Current state
+    let currentCourse = null;
+
+    // Initialize the app
+    function init() {
+      renderCourses();
+      setupEventListeners();
+    }
+
+    // Render course cards on home page
+    function renderCourses() {
+      coursesContainer.innerHTML = '';
+
+      courses.forEach(course => {
+        const progress = getCourseProgress(course);
+        const isCompleted = progress === 100;
+
+        const courseCard = document.createElement('div');
+        courseCard.className = 'course-card fade-in';
+        courseCard.innerHTML = `
+                    <div class="course-image">${course.icon}</div>
+                    <div class="course-content">
+                        <h3 class="course-title">${course.title} ${isCompleted ? '<span class="completed-badge">Completed</span>' : ''}</h3>
+                        <p class="course-description">${course.description}</p>
+                        <div class="course-meta">
+                            <span>${course.duration}</span>
+                            <span>${progress}% complete</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                `;
+
+        courseCard.addEventListener('click', () => showCourseDetail(course));
+        coursesContainer.appendChild(courseCard);
+      });
+    }
+
+    // Calculate course progress percentage
+    function getCourseProgress(course) {
+      if (course.lessons.length === 0) return 0;
+      const completedLessons = course.lessons.filter(lesson => lesson.completed).length;
+      return Math.round((completedLessons / course.lessons.length) * 100);
+    }
+
+    // Show course detail page
+    function showCourseDetail(course) {
+      currentCourse = course;
+
+      // Render course header
+      const progress = getCourseProgress(course);
+      const isCompleted = progress === 100;
+
+      courseHeader.innerHTML = `
+                <div class="course-header-image">${course.icon}</div>
+                <div class="course-header-info">
+                    <h2 class="course-header-title">${course.title} ${isCompleted ? '<span class="completed-badge">Completed</span>' : ''}</h2>
+                    <p class="course-header-description">${course.description}</p>
+                    <div class="course-stats">
+                        <div class="stat">
+                            <span class="stat-value">${course.lessons.length}</span>
+                            <span class="stat-label">Lessons</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">${progress}%</span>
+                            <span class="stat-label">Complete</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">${course.duration}</span>
+                            <span class="stat-label">Duration</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+      // Render lessons
+      renderLessons();
+
+      // Show detail page, hide home page
+      homePage.style.display = 'none';
+      detailPage.style.display = 'block';
+
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+
+    // Render lessons list
+    function renderLessons() {
+      lessonsList.innerHTML = '';
+
+      currentCourse.lessons.forEach((lesson, index) => {
+        const lessonItem = document.createElement('li');
+        lessonItem.className = 'lesson-item';
+        lessonItem.innerHTML = `
+                    <div class="lesson-number">${index + 1}</div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">${lesson.title}</div>
+                        <div class="lesson-duration">${lesson.duration}</div>
+                    </div>
+                    <div class="lesson-status ${lesson.completed ? 'status-completed' : 'status-pending'}"></div>
+                `;
+
+        lessonsList.appendChild(lessonItem);
+      });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Back button
+      backBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        detailPage.style.display = 'none';
+        homePage.style.display = 'block';
+        currentCourse = null;
+      });
+
+      // Start course button
+      startCourseBtn.addEventListener('click', () => {
+        alert(`Starting "${currentCourse.title}"!`);
+        // In a real app, this would navigate to the first lesson
+      });
+
+      // Complete course button
+      completeCourseBtn.addEventListener('click', () => {
+        // Mark all lessons as completed
+        currentCourse.lessons.forEach(lesson => {
+          lesson.completed = true;
+        });
+
+        // Update UI
+        renderLessons();
+        renderCourses();
+
+        // Show completion message
+        alert(`Congratulations! You've completed "${currentCourse.title}"!`);
+
+        // Update header
+        showCourseDetail(currentCourse);
+      });
+    }
+
+    // Initialize the app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+
+</html>
